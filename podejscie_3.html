@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banery Promocyjne</title>
+    <style>
+        /* Prosty styl CSS dla banerów */
+        .banner {
+            width: 300px;
+            height: 250px;
+            margin: 20px;
+            background-color: #ccc;
+            display: inline-block;
+            position: relative;
+            text-align: center;
+            line-height: 250px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .banner-grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .banner-grid .banner {
+            width: 23%;
+            margin: 1%;
+        }
+
+        .banner p {
+            margin: 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Pojedynczy baner -->
+    <div id="single-banner" class="banner">
+        <p>Baner Pojedynczy</p>
+    </div>
+
+    <!-- Banery w siatce -->
+    <div class="banner-grid">
+        <div class="banner">
+            <p>Baner 1</p>
+        </div>
+        <div class="banner">
+            <p>Baner 2</p>
+        </div>
+        <div class="banner">
+            <p>Baner 3</p>
+        </div>
+        <div class="banner">
+            <p>Baner 4</p>
+        </div>
+    </div>
+
+    <!-- Skrypt do obsługi eventów i wysyłania danych do GA4 za pomocą GTM -->
+    <script>
+        // Funkcja do wysyłania zdarzenia view_promotion w Data Layer
+        function sendViewPromotionEvent(promotionName, promotionId, locationId, creativeName, creativeSlot, items) {
+            dataLayer.push({
+                event: "view_promotion",
+                ecommerce: {
+                    creative_name: creativeName,
+                    creative_slot: creativeSlot,
+                    promotion_id: promotionId,
+                    promotion_name: promotionName,
+                    location_id: locationId,
+                    items: items
+                }
+            });
+        }
+
+        // Funkcja do wysyłania zdarzenia select_promotion w Data Layer
+        function sendSelectPromotionEvent(promotionName, promotionId, locationId, creativeName, creativeSlot, items) {
+            dataLayer.push({
+                event: "select_promotion",
+                ecommerce: {
+                    creative_name: creativeName,
+                    creative_slot: creativeSlot,
+                    promotion_id: promotionId,
+                    promotion_name: promotionName,
+                    location_id: locationId,
+                    items: items
+                }
+            });
+        }
+
+        // Wyzwalanie eventu view_promotion przy załadowaniu strony (banery są widoczne)
+        window.addEventListener('load', function() {
+            // Pojedynczy baner
+            const singleItem = [
+                {
+                    item_id: "SKU_12345",
+                    item_name: "Stan and Friends Tee",
+                    affiliation: "Google Merchandise Store",
+                    coupon: "SUMMER_FUN",
+                    discount: 2.22,
+                    index: 0,
+                    item_brand: "Google",
+                    item_category: "Apparel",
+                    item_category2: "Adult",
+                    item_category3: "Shirts",
+                    item_category4: "Crew",
+                    item_category5: "Short sleeve",
+                    item_list_id: "related_products",
+                    item_list_name: "Related Products",
+                    item_variant: "green",
+                    location_id: "ChIJIQBpAG2ahYAR_6128GcTUEo",
+                    price: 10.01,
+                    quantity: 3
+                }
+            ];
+            sendViewPromotionEvent("Summer Sale", "P_12345", "Welcome", "Summer Banner", "featured_app_1", singleItem);
+
+            // Banery w siatce
+            const gridBanners = document.querySelectorAll(".banner-grid .banner");
+            let gridItems = [];
+            gridBanners.forEach((banner, index) => {
+                gridItems.push({
+                    item_id: `SKU_${index + 1}`,
+                    item_name: `Baner ${index + 1}`,
+                    affiliation: "Google Merchandise Store",
+                    coupon: "SUMMER_FUN",
+                    discount: 2.22,
+                    index: index,
+                    item_brand: "Google",
+                    item_category: "Apparel",
+                    item_category2: "Adult",
+                    item_category3: "Shirts",
+                    item_category4: "Crew",
+                    item_category5: "Short sleeve",
+                    item_list_id: "related_products",
+                    item_list_name: "Related Products",
+                    item_variant: "green",
+                    location_id: "ChIJIQBpAG2ahYAR_6128GcTUEo",
+                    price: 10.01,
+                    quantity: 1
+                });
+            });
+
+            // Wysyłanie eventu dla wszystkich banerów w siatce
+            sendViewPromotionEvent("Summer Sale", "P_12345", "Grid Location", "Summer Banner", "featured_app_2", gridItems);
+        });
+
+        // Kliknięcie w pojedynczy baner
+        document.getElementById("single-banner").addEventListener("click", function() {
+            const selectedItem = [
+                {
+                    item_id: "SKU_12345",
+                    item_name: "Stan and Friends Tee",
+                    affiliation: "Google Merchandise Store",
+                    coupon: "SUMMER_FUN",
+                    discount: 2.22,
+                    index: 0,
+                    item_brand: "Google",
+                    item_category: "Apparel",
+                    item_category2: "Adult",
+                    item_category3: "Shirts",
+                    item_category4: "Crew",
+                    item_category5: "Short sleeve",
+                    item_list_id: "related_products",
+                    item_list_name: "Related Products",
+                    item_variant: "green",
+                    location_id: "ChIJIQBpAG2ahYAR_6128GcTUEo",
+                    price: 10.01,
+                    quantity: 3
+                }
+            ];
+            sendSelectPromotionEvent("Summer Sale", "P_12345", "Welcome", "Summer Banner", "featured_app_1", selectedItem);
+        });
+
+        // Kliknięcie w banery w siatce
+        const gridBanners = document.querySelectorAll(".banner-grid .banner");
+        gridBanners.forEach((banner, index) => {
+            banner.addEventListener("click", function() {
+                const selectedItem = [
+                    {
+                        item_id: `SKU_${index + 1}`,
+                        item_name: `Baner ${index + 1}`,
+                        affiliation: "Google Merchandise Store",
+                        coupon: "SUMMER_FUN",
+                        discount: 2.22,
+                        index: index,
+                        item_brand: "Google",
+                        item_category: "Apparel",
+                        item_category2: "Adult",
+                        item_category3: "Shirts",
+                        item_category4: "Crew",
+                        item_category5: "Short sleeve",
+                        item_list_id: "related_products",
+                        item_list_name: "Related Products",
+                        item_variant: "green",
+                        location_id: "ChIJIQBpAG2ahYAR_6128GcTUEo",
+                        price: 10.01,
+                        quantity: 1
+                    }
+                ];
+                sendSelectPromotionEvent("Summer Sale", `P_${index + 1}`, "Grid Location", "Summer Banner", `featured_app_${index + 1}`, selectedItem);
+            });
+        });
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PNSTLRQG');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNSTLRQG"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+</body>
+</html>
